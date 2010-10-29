@@ -5,6 +5,7 @@
 
 package com.joshondesign.appbundler;
 
+import com.joshondesign.appbundler.onejar.OneJarBundler;
 import com.joshondesign.appbundler.jnlp.JNLPBundler;
 import com.joshondesign.appbundler.mac.MacBundler;
 import com.joshondesign.xml.Doc;
@@ -49,17 +50,12 @@ public class Bundler {
             }
         }
 
-        //p("args = ");
-        //p(args);
 
         p("using target " + target);
         p("using dest_dir = " + DEST_DIR);
         p("using descriptor = " + DESCRIPTOR);
 
         File keystore = new File("testkeystore");
-//        for(int i=3; i<args.length;i++) {
-//            jardirs.add(args[i]);
-//        }
 
         //load xml
         AppDescription app = parseDescriptor(DESCRIPTOR);
@@ -76,15 +72,10 @@ public class Bundler {
         if("jnlp".equals(target)) {
             JNLPBundler.start(app,DEST_DIR, codebase);
         }
+        if("onejar".equals(target)) {
+            OneJarBundler.start(app,DEST_DIR);
+        }
 
-        /*
-        //create dest dir
-        File outDir = prepDestDir(DEST_DIR,app);
-        //copy jars to dest dir
-        processJars(app,outDir,keystore,"joshy","password");
-        //generate JNLP
-        generateJNLP(app,outDir);
-        */
     }
 
     private static void p(String[] args) {
