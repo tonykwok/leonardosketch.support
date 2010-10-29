@@ -33,6 +33,7 @@ public class OneJarBundler {
             Attributes a = manifest.getMainAttributes();
             a.putValue("Main-Class", app.getMainClass());
             a.put(Attributes.Name.MANIFEST_VERSION,"1.0");
+            new File(DEST_DIR).mkdirs();
             
             Set<String> writtenNames = new HashSet<String>();
             p("doing a one jar bundler");
@@ -52,6 +53,8 @@ public class OneJarBundler {
                     //Write the entry to the output JAR
                     p("writng entry: " + entry.getName());
                     if(!writtenNames.contains(entry.getName())) {
+                        //TODO: compression is broken here
+                        //entry.setMethod(JarEntry.DEFLATED);
                         jarOut.putNextEntry(entry);
                         int read;
                         while ((read = jarIn.read(buf)) != -1) {
