@@ -10,5 +10,5 @@ package com.apple.eawt;
  * @author joshmarinacci
  */
 public class ApplicationEvent {
-
+    public void setHandled(boolean handled) { }
 }
