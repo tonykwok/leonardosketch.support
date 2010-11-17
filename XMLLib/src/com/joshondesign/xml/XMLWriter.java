@@ -40,6 +40,10 @@ public class XMLWriter {
     public void close() {
         out.close();
     }
+    
+    public void flush() {
+        out.flush();
+    }
 
     public XMLWriter start(String elementName, String ... ats) {
         if(elementStartIsOpen) {
