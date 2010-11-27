@@ -24,4 +24,7 @@ public class Application {
     public void addApplicationListener(ApplicationListener l) {
         
     }
+    public void setOpenFileHandler(OpenFilesHandler handler) {
+        
+    }
 }
