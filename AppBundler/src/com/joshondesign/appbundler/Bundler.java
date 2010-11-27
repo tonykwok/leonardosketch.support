@@ -99,6 +99,9 @@ public class Bundler {
             }
             app.addJar(jar);
         }
+        for(Elem extElem : doc.xpath("/app/filetype")) {
+            app.addExtension(extElem.attr("extension"),extElem.attr("mimetype"));
+        }
 
         return app;
 

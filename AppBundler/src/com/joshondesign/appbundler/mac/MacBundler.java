@@ -32,8 +32,7 @@ public class MacBundler {
         javadir.mkdir();
 
 
-        //File libdir = new File(outDir,"lib");
-        //libdir.mkdir();
+
         for(Jar jar : app.getJars()) {
             File jarFile = new File(javadir,jar.getName());
             byte[] buf = new byte[1024*16];
@@ -65,11 +64,8 @@ public class MacBundler {
                 MacBundler.class.getResourceAsStream("PkgInfo.txt"),
                 new FileOutputStream(new File(contentsDir,"PkgInfo")));
 
-        
         // copy the java stub
-        FileInputStream stub_path = new FileInputStream(
-            //"/System/Library/Frameworks/JavaVM.framework/Versions/Current/Resources/MacOS/JavaApplicationStub"
-            "resources/JavaApplicationStub");
+        FileInputStream stub_path = new FileInputStream("resources/JavaApplicationStub");
         File stub_dest = new File(contentsDir,"MacOS/JavaApplicationStub");
         Bundler.copyStream(stub_path,new FileOutputStream(stub_dest));
         // make the stub executable
@@ -93,10 +89,29 @@ public class MacBundler {
 
         XMLWriter out = new XMLWriter(new File(contentsDir,"Info.plist"));
         out.header();
-        out.start("plist","version","0.9");
+        out.start("plist","version","1.0");
         out.start("dict");
-        
+
+        for(String ext : app.getExtensions()) {
+            //file extensions
+            out.start("key").text("CFBundleDocumentTypes").end();
+            out.start("array").start("dict");
+                out.start("key").text("CFBundleTypeExtensions").end();
+                out.start("array").start("string").text(ext).end().end();
+                out.start("key").text("CFBundleTypeName").end();
+                out.start("string").text(ext).end();
+                out.start("key").text("CFBundleTypeMIMETypes").end();
+                out.start("array").start("string").text(app.getExtensionMimetype(ext)).end().end();
+                out.start("key").text("CFBundleTypeRole").end();
+                out.start("string").text("Editor").end();
+            out.end().end();
+        }
+
         out.start("key").text("CFBundleName").end().start("string").text(app.getName()).end();
+        out.start("key").text("CFBundleDisplayName").end().start("string").text(app.getName()).end();
+        out.start("key").text("CFBundleExecutable").end().start("string").text(app.getName()).end();
+        out.start("key").text("CFBundleGetInfoString").end().start("string").text(app.getName()).end();
+
         out.start("key").text("CFBundleVersion").end().start("string").text("10.2").end();
         out.start("key").text("CFBundleAllowMixedLocalizations").end().start("string").text("true").end();
         out.start("key").text("CFBundleExecutable").end().start("string").text("JavaApplicationStub").end();
@@ -108,6 +123,8 @@ public class MacBundler {
 
         out.start("key").text("CFBundleInfoDictionaryVersion").end().start("string").text("6.0").end();
         out.start("key").text("CFBundleInfoDictionaryVersion").end().start("string").text("6.0").end();
+        //LSMinimumSystemVersion
+        //LSMultipleInstancesProhibited
 
         out.start("key").text("Java").end();
         out.start("dict");
