@@ -19,10 +19,12 @@ public class AppDescription {
     private List<Jar> jars;
     private String name;
     private Map<String,String> extensions;
+    private Map<String,String> icons;
 
     public AppDescription() {
         jars = new ArrayList<Jar>();
         extensions = new HashMap<String, String>();
+        icons = new HashMap<String, String>();
     }
 
     void addJar(Jar jar) {
@@ -47,14 +49,21 @@ public class AppDescription {
         throw new Exception("Error! Couldn't find a main class for the app");
     }
 
-    void addExtension(String fileExtension, String mimeType) {
+    void addExtension(String fileExtension, String mimeType, String icon) {
         extensions.put(fileExtension,mimeType);
+        if(icon != null) {
+            icons.put(fileExtension,icon);
+        }
     }
     public Collection<String> getExtensions() {
         return extensions.keySet();
     }
     public String getExtensionMimetype(String ext) {
         return extensions.get(ext);
+    }
+
+    public String getExtensionIcon(String ext) {
+        return icons.get(ext);
     }
 
 }

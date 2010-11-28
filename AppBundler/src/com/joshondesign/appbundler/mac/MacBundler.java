@@ -55,6 +55,20 @@ public class MacBundler {
         p("t = " + resourcesDir.getAbsolutePath());
         p("t = " + resourcesDir.exists());
         Bundler.copyStream(new FileInputStream(icon),new FileOutputStream(outIcon));
+        for(String ext : app.getExtensions()) {
+            String exticon = app.getExtensionIcon(ext);
+            if(exticon != null) {
+                File ifile = new File(exticon);
+                System.out.println("copying over icon " + ifile.getAbsolutePath());
+                if(ifile.exists()) {
+                    outIcon = new File(resourcesDir,ifile.getName());
+                    Bundler.copyStream(new FileInputStream(ifile), new FileOutputStream(outIcon));
+                    p("copied: " + ifile.getAbsolutePath());
+                    p("   to:  " + outIcon.getAbsolutePath());
+                }
+                
+            }
+        }
         
         //build the info plist
         processInfoPlist(app,contentsDir);
@@ -104,6 +118,14 @@ public class MacBundler {
                 out.start("array").start("string").text(app.getExtensionMimetype(ext)).end().end();
                 out.start("key").text("CFBundleTypeRole").end();
                 out.start("string").text("Editor").end();
+                String icon = app.getExtensionIcon(ext);
+                if(icon != null) {
+                    out.start("key").text("CFBundleTypeIconFile").end();
+                    File ifile = new File(icon);
+                    System.out.println("doing icon: " + ifile.getAbsolutePath());
+                    out.start("string").text(ifile.getName()).end();
+                    //copy over the icon
+                }
             out.end().end();
         }
 
