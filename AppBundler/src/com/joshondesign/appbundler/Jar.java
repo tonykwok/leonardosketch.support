@@ -16,6 +16,7 @@ public class Jar {
     private boolean main;
     private String mainClass;
     private File file;
+    private String os;
 
     public Jar(String name) {
         this.name = name;
@@ -46,6 +47,29 @@ public class Jar {
 
     String getMainClass() {
         return this.mainClass;
+    }
+
+    public boolean isOSSpecified() {
+        return os!=null;
+    }
+
+    public boolean matchesOS(String string) {
+        if(os.equals(string.toLowerCase())) return true;
+        if(os.startsWith("!")) {
+            String nos = os.substring(1);
+            if(!nos.equals(string.toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    void setOS(String os) {
+        this.os = os.trim().toLowerCase();
+    }
+
+    public String getOS() {
+        return this.os;
     }
 
 }

@@ -55,7 +55,7 @@ public class Bundler {
         p("using dest_dir = " + DEST_DIR);
         p("using descriptor = " + DESCRIPTOR);
 
-        File keystore = new File("testkeystore");
+        //File keystore = new File("testkeystore");
 
         //load xml
         AppDescription app = parseDescriptor(DESCRIPTOR);
@@ -96,6 +96,9 @@ public class Bundler {
             if(jarElem.hasAttr("main-class")) {
                 jar.setMain(true);
                 jar.setMainClass(jarElem.attr("main-class"));
+            }
+            if(jarElem.hasAttr("os")) {
+                jar.setOS(jarElem.attr("os"));
             }
             app.addJar(jar);
         }

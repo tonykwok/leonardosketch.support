@@ -34,6 +34,13 @@ public class MacBundler {
 
 
         for(Jar jar : app.getJars()) {
+            p("processing jar = " + jar.getName() + " os = "+jar.getOS());
+            if(jar.isOSSpecified()) {
+                if(!jar.matchesOS("mac")) {
+                    p("   skipping jar");
+                    continue;
+                }
+            }
             File jarFile = new File(javadir,jar.getName());
             byte[] buf = new byte[1024*16];
             FileInputStream fin = new FileInputStream(jar.getFile());
@@ -45,7 +52,7 @@ public class MacBundler {
             }
             fin.close();
             fout.close();
-            p("m copied jar: " + jar.getName());
+            p("   m copied jar: " + jar.getName());
         }
 
         // copy the icon
