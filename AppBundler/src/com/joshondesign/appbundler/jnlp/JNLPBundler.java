@@ -41,6 +41,17 @@ public class JNLPBundler {
         out.println("  <description>general purpose drawing tool</description>");
         out.println("  <offline-allowed/>");
         //out.println("  <icon href='Turtle.png'/>");
+        for(String ext : app.getExtensions()) {
+            p("generating extension for: " + ext);
+            out.println("  <association"
+                    +" mime-type=\""+app.getExtensionMimetype(ext)+"\""
+                    +" extensions=\""+ext+"\""
+                    +" >");
+            out.println("    <description>"+ext+" file</description>");
+            //out.println("<icon href=\"doc-icon.png\"/>");
+            out.println("  </association>");
+        }
+        out.println("<shortcut online=\"false\"> <desktop/> </shortcut>");
         out.println("</information>");
         out.println("<security><all-permissions/></security>");
         out.println("<update check='always' policy='prompt-update'/>");

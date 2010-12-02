@@ -44,18 +44,6 @@ public class MacBundler {
             }
             File jarFile = new File(javadir,jar.getName());
             Util.copyToFile(jar.getFile(), jarFile);
-            /*
-            byte[] buf = new byte[1024*16];
-            FileInputStream fin = new FileInputStream(jar.getFile());
-            FileOutputStream fout = new FileOutputStream(jarFile);
-            while(true) {
-                int n = fin.read(buf);
-                if(n < 0) break;
-                fout.write(buf,0,n);
-            }
-            fin.close();
-            fout.close();
-            p("   m copied jar: " + jar.getName());*/
         }
 
         // copy the icon
