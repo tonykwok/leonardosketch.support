@@ -2,6 +2,7 @@ package com.joshondesign.appbundler.jnlp;
 
 import com.joshondesign.appbundler.AppDescription;
 import com.joshondesign.appbundler.Jar;
+import com.joshondesign.appbundler.Util;
 
 import java.io.*;
 
@@ -24,17 +25,7 @@ public class JNLPBundler {
         //copy over the jars
         for(Jar jar : app.getJars()) {
             File jarFile = new File(libdir,jar.getName());
-            byte[] buf = new byte[1024*16];
-            FileInputStream fin = new FileInputStream(jar.getFile());
-            FileOutputStream fout = new FileOutputStream(jarFile);
-            while(true) {
-                int n = fin.read(buf);
-                if(n < 0) break;
-                fout.write(buf,0,n);
-            }
-            fin.close();
-            fout.close();
-            p("m copied jar: " + jar.getName());
+            Util.copyToFile(jar.getFile(),jarFile);
         }
 
         buildJNLP(app,destDir, codebase);

@@ -8,6 +8,7 @@ package com.joshondesign.appbundler;
 import com.joshondesign.appbundler.onejar.OneJarBundler;
 import com.joshondesign.appbundler.jnlp.JNLPBundler;
 import com.joshondesign.appbundler.mac.MacBundler;
+import com.joshondesign.appbundler.win.WindowsBundler;
 import com.joshondesign.xml.Doc;
 import com.joshondesign.xml.Elem;
 import com.joshondesign.xml.XMLParser;
@@ -74,6 +75,9 @@ public class Bundler {
         }
         if("onejar".equals(target)) {
             OneJarBundler.start(app,DEST_DIR);
+        }
+        if("win".equals(target)) {
+            WindowsBundler.start(app,DEST_DIR);
         }
 
     }

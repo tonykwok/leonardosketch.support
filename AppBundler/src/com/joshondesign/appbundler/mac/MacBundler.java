@@ -3,6 +3,7 @@ package com.joshondesign.appbundler.mac;
 import com.joshondesign.appbundler.AppDescription;
 import com.joshondesign.appbundler.Bundler;
 import com.joshondesign.appbundler.Jar;
+import com.joshondesign.appbundler.Util;
 import com.joshondesign.xml.XMLWriter;
 
 import java.io.File;
@@ -42,6 +43,8 @@ public class MacBundler {
                 }
             }
             File jarFile = new File(javadir,jar.getName());
+            Util.copyToFile(jar.getFile(), jarFile);
+            /*
             byte[] buf = new byte[1024*16];
             FileInputStream fin = new FileInputStream(jar.getFile());
             FileOutputStream fout = new FileOutputStream(jarFile);
@@ -52,7 +55,7 @@ public class MacBundler {
             }
             fin.close();
             fout.close();
-            p("   m copied jar: " + jar.getName());
+            p("   m copied jar: " + jar.getName());*/
         }
 
         // copy the icon
