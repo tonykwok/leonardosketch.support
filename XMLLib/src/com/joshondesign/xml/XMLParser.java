@@ -10,6 +10,7 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.w3c.dom.*;
 import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -24,6 +25,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.io.StringReader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +34,7 @@ import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.stream.StreamResult;
+import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 
 /**
@@ -91,9 +94,17 @@ public class XMLParser {
 
 
     private static Document loadDocument(InputStream in) throws Exception {
-        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        factory.setValidating(false);
+        factory.setExpandEntityReferences(false);
+        factory.setXIncludeAware(false);
+        factory.setNamespaceAware(false);
+        //factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+
         MyErrorHandler eh = new MyErrorHandler();
         builder.setErrorHandler(eh);
+        builder.setEntityResolver(new MyEntityResolver());
         //u.p("before"+Thread.currentThread());
         Document doc = builder.parse(in);
         //u.p("after" + Thread.currentThread());
@@ -270,6 +281,17 @@ public class XMLParser {
         StreamResult result = new StreamResult(new FileOutputStream(out));
         xslt.transform(new DOMSource(doc.document), result);        
         //return new Doc((Document) result.getNode());
+    }
+
+    private static class MyEntityResolver implements EntityResolver{
+
+        public MyEntityResolver() {
+        }
+
+        public InputSource resolveEntity(String string, String string1) throws SAXException, IOException {
+            p("ignoring entity: " + string + " " + string1);
+            return new InputSource(new StringReader(""));
+        }
     }
 
     private static class MyErrorHandler implements ErrorHandler {
