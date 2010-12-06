@@ -13,6 +13,22 @@ import java.util.List;
  * @author joshmarinacci
  */
 public abstract class AppEvent extends java.util.EventObject {
+
+    public static class AboutEvent {
+        public AboutEvent() {
+        }
+    }
+
+    public static class QuitEvent {
+        public QuitEvent() {
+        }
+    }
+
+    public static class PreferencesEvent {
+        public PreferencesEvent() {
+        }
+    }
+
     AppEvent() {
         super(null);
     }
