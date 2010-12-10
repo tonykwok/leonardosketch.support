@@ -47,18 +47,20 @@ public class XMLWriter {
 
     public XMLWriter start(String elementName, String ... ats) {
         if(elementStartIsOpen) {
-            closeElementStart();
+            closeElementStart(true);
         }
         stack.push(elementName);
-        tab();
+        if(!didText){
+            tab();
+        }
         indent();
+        didText = false;
         out.print("<"+elementName);
         if(ats.length > 0) {
             hasAtts = true;
         }
         for(int i=0; i<ats.length/2; i++) {
-            tab();
-            out.println("" + ats[i*2] + "='" + ats[i*2+1] + "'");
+            out.print(" " + ats[i*2] + "='" + ats[i*2+1] + "'");
         }
         elementStartIsOpen = true;
         return this;
@@ -75,24 +77,25 @@ public class XMLWriter {
     }
 
     public XMLWriter attr(String name, String value) {
-        if(hasAtts) tab();
-        out.println("  "+name+"='"+value+"'");
+        //if(hasAtts) tab();
+        out.print(" "+name+"='"+value+"'");
         hasAtts = true;
         return this;
     }
 
-    private void closeElementStart() {
-        if(hasAtts) {
-            tab();
+    private void closeElementStart(boolean endLine) {
+        if(endLine) {
+            out.println(">");
+        } else {
+            out.print(">");
         }
-        out.print(">");
         hasAtts = false;
         elementStartIsOpen = false;
     }
 
     public XMLWriter end() {
         if(elementStartIsOpen) {
-            closeElementStart();
+            closeElementStart(didText);
         }
         outdent();
         if(!didText) {
@@ -113,7 +116,7 @@ public class XMLWriter {
 
     public XMLWriter text(String text) {
         if(elementStartIsOpen) {
-            closeElementStart();
+            closeElementStart(false);
         }
         out.print(text);
         didText = true;

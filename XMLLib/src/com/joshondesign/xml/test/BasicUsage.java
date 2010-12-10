@@ -21,6 +21,7 @@ public class BasicUsage {
         for(int i=0; i<3; i++) {
             out.start("bar").attr("id",""+i).text("asdf").end();
         }
+        out.start("ick", "a","b").text("asdf").start("x", "c","d").end().end();
         out.end();
         out.close();
 
