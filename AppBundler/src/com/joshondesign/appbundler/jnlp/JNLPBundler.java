@@ -40,7 +40,15 @@ public class JNLPBundler {
         out.println("  <homepage href='http://leonardosketch.org/'/>");
         out.println("  <description>general purpose drawing tool</description>");
         out.println("  <offline-allowed/>");
-        //out.println("  <icon href='Turtle.png'/>");
+        for(String iconS : app.getAppIcons()) {
+            if(iconS.toLowerCase().endsWith(".png")) {
+                File icon = new File(iconS);
+                out.println("  <icon href='"+icon.getName()+"' />");
+                File nicon = new File(dir,icon.getName());
+                p("copying icon to: "+ nicon.getAbsolutePath());
+                Util.copyToFile(icon, nicon);
+            }
+        }
         for(String ext : app.getExtensions()) {
             p("generating extension for: " + ext);
             out.println("  <association"

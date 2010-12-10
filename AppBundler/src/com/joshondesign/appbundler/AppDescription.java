@@ -20,11 +20,13 @@ public class AppDescription {
     private String name;
     private Map<String,String> extensions;
     private Map<String,String> icons;
+    private final ArrayList<String> appIcons;
 
     public AppDescription() {
         jars = new ArrayList<Jar>();
         extensions = new HashMap<String, String>();
         icons = new HashMap<String, String>();
+        appIcons = new ArrayList<String>();
     }
 
     void addJar(Jar jar) {
@@ -64,6 +66,14 @@ public class AppDescription {
 
     public String getExtensionIcon(String ext) {
         return icons.get(ext);
+    }
+
+    public Collection<String> getAppIcons() {
+        return appIcons;
+    }
+
+    void addIcon(String name) {
+        appIcons.add(name);
     }
 
 }

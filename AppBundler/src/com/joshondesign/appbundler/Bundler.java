@@ -109,6 +109,10 @@ public class Bundler {
         for(Elem extElem : doc.xpath("/app/filetype")) {
             app.addExtension(extElem.attr("extension"),extElem.attr("mimetype"),extElem.attr("icon"));
         }
+        for(Elem iconE : doc.xpath("/app/icon")) {
+            System.out.println("got an icon: " + iconE.attr("name"));
+            app.addIcon(iconE.attr("name"));
+        }
 
         return app;
 

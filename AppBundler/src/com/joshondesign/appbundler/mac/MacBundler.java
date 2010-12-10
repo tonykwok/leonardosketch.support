@@ -47,19 +47,26 @@ public class MacBundler {
         }
 
         // copy the icon
-        File icon = new File("resources/Turtle.icns");
-        File outIcon = new File(resourcesDir,"icon.icns");
-        p("out icon = " + outIcon.getAbsolutePath());
-        p("t = " + resourcesDir.getAbsolutePath());
-        p("t = " + resourcesDir.exists());
-        Bundler.copyStream(new FileInputStream(icon),new FileOutputStream(outIcon));
+        for(String iconS : app.getAppIcons()) {
+            if(iconS.toLowerCase().endsWith(".icns")) {
+                p("Using icon: " + iconS);
+                File icon = new File(iconS);
+                File outIcon = new File(resourcesDir,"icon.icns");
+                p("out icon = " + outIcon.getAbsolutePath());
+                p("t = " + resourcesDir.getAbsolutePath());
+                p("t = " + resourcesDir.exists());
+                Bundler.copyStream(new FileInputStream(icon),new FileOutputStream(outIcon));
+            }
+        }
+
+
         for(String ext : app.getExtensions()) {
             String exticon = app.getExtensionIcon(ext);
             if(exticon != null) {
                 File ifile = new File(exticon);
                 System.out.println("copying over icon " + ifile.getAbsolutePath());
                 if(ifile.exists()) {
-                    outIcon = new File(resourcesDir,ifile.getName());
+                    File outIcon = new File(resourcesDir,ifile.getName());
                     Bundler.copyStream(new FileInputStream(ifile), new FileOutputStream(outIcon));
                     p("copied: " + ifile.getAbsolutePath());
                     p("   to:  " + outIcon.getAbsolutePath());
