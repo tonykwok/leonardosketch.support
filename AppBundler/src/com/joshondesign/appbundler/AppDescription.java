@@ -21,12 +21,14 @@ public class AppDescription {
     private Map<String,String> extensions;
     private Map<String,String> icons;
     private final ArrayList<String> appIcons;
+    private List<NativeLib> natives;
 
     public AppDescription() {
         jars = new ArrayList<Jar>();
         extensions = new HashMap<String, String>();
         icons = new HashMap<String, String>();
         appIcons = new ArrayList<String>();
+        natives = new ArrayList<NativeLib>();
     }
 
     void addJar(Jar jar) {
@@ -74,6 +76,14 @@ public class AppDescription {
 
     void addIcon(String name) {
         appIcons.add(name);
+    }
+
+    void addNative(NativeLib nativeLib) {
+        natives.add(nativeLib);
+    }
+
+    public Iterable<NativeLib> getNativeLibs() {
+        return natives;
     }
 
 }

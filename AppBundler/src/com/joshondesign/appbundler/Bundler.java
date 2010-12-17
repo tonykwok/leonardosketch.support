@@ -67,6 +67,8 @@ public class Bundler {
         //search support dirs for required jars
         findJars(app,jardirs);
 
+        verifyNativeLibs(app);
+
         if("mac".equals(target)) {
             MacBundler.start(app,DEST_DIR);
         }
@@ -114,6 +116,10 @@ public class Bundler {
             app.addIcon(iconE.attr("name"));
         }
 
+        for(Elem nativeE : doc.xpath("/app/native")) {
+            app.addNative(new NativeLib(nativeE.attr("name")));
+        }
+
         return app;
 
     }
@@ -131,6 +137,11 @@ public class Bundler {
         }
     }
 
+    private static void verifyNativeLibs(AppDescription app) throws Exception {
+        for(NativeLib nlib : app.getNativeLibs()) {
+            nlib.verify();
+        }
+    }
     private static void verifyJarDirs(List<String> jardirs) throws Exception {
         for(String dir : jardirs) {
             if(!new File(dir).exists()) {
@@ -155,6 +166,20 @@ public class Bundler {
                 throw new Exception("jar " + jar.getName() + " not found");
             }
             p("matched jar with file: " + jar.getFile().getName() + " " + jar.getFile().length() + " bytes");
+        }
+
+        for(NativeLib nlib : app.getNativeLibs()) {
+            p("looking for native lib: " + nlib.getName());
+            for(String sdir : jardirs) {
+                File dir = new File(sdir);
+                for(File file : dir.listFiles()) {
+                    //p("looking at: " + file.getName() + " is dir = " + file.isDirectory());
+                    if(file.getName().equals(nlib.getName()) && file.isDirectory()) {
+                        p("found native lib: " + file.getAbsolutePath());
+                        nlib.setBaseDir(file);
+                    }
+                }
+            }
         }
     }
 
