@@ -3,12 +3,15 @@ package com.joshondesign.appbundler.mac;
 import com.joshondesign.appbundler.AppDescription;
 import com.joshondesign.appbundler.Bundler;
 import com.joshondesign.appbundler.Jar;
+import com.joshondesign.appbundler.NativeLib;
 import com.joshondesign.appbundler.Util;
 import com.joshondesign.xml.XMLWriter;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Created by IntelliJ IDEA.
@@ -45,6 +48,8 @@ public class MacBundler {
             File jarFile = new File(javadir,jar.getName());
             Util.copyToFile(jar.getFile(), jarFile);
         }
+
+        processNatives(javadir, app);
 
         // copy the icon
         for(String iconS : app.getAppIcons()) {
@@ -84,7 +89,7 @@ public class MacBundler {
                 new FileOutputStream(new File(contentsDir,"PkgInfo")));
 
         // copy the java stub
-        FileInputStream stub_path = new FileInputStream("resources/JavaApplicationStub");
+        InputStream stub_path = MacBundler.class.getResourceAsStream("JavaApplicationStub");
         File stub_dest = new File(contentsDir,"MacOS/JavaApplicationStub");
         Bundler.copyStream(stub_path,new FileOutputStream(stub_dest));
         // make the stub executable
@@ -163,6 +168,11 @@ public class MacBundler {
         for(Jar jar : app.getJars()) {
             out.start("string").text("$JAVAROOT/"+jar.getName()).end();
         }
+        for(NativeLib lib : app.getNativeLibs()) {
+            for(File jar : lib.getJars()) {
+                out.start("string").text("$JAVAROOT/"+jar.getName()).end();
+            }
+        }
         out.end();//array
 
         out.start("key").text("Properties").end();
@@ -182,5 +192,26 @@ public class MacBundler {
 
     private static void p(String s) {
         System.out.println(s);
+    }
+
+    private static void processNatives(File javaDir, AppDescription app) throws IOException {
+        //track the list of files in the appbundler_tasks.xml
+        byte[] buf = new byte[4096];
+        for(NativeLib lib : app.getNativeLibs()) {
+            p("sucking in native lib: " + lib);
+            for(File os : lib.getOSDirs()) {
+                p("os = " + os.getName());
+                for(File file : os.listFiles()) {
+                    p("   file = " + file.getName());
+                    File destFile = new File(javaDir, file.getName());
+                    p("copying to file: " + destFile);
+                    Util.copyToFile(file, destFile);
+                }
+            }
+            for(File jar : lib.getJars()) {
+                p("copying over native lib jar: " + jar.getName());
+                Util.copyToFile(jar, new File(javaDir, jar.getName()));
+            }
+        }
     }
 }
