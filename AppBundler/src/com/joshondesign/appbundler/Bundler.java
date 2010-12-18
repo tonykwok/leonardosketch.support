@@ -57,7 +57,6 @@ public class Bundler {
         p("using descriptor = " + DESCRIPTOR);
 
         //File keystore = new File("testkeystore");
-
         //load xml
         AppDescription app = parseDescriptor(DESCRIPTOR);
         //check xml
@@ -79,6 +78,12 @@ public class Bundler {
             OneJarBundler.start(app,DEST_DIR);
         }
         if("win".equals(target)) {
+            WindowsBundler.start(app,DEST_DIR);
+        }
+        if("all".equals(target)) {
+            MacBundler.start(app,DEST_DIR);
+            OneJarBundler.start(app,DEST_DIR);
+            JNLPBundler.start(app,DEST_DIR, codebase);
             WindowsBundler.start(app,DEST_DIR);
         }
 

@@ -27,6 +27,7 @@ public class MacBundler {
         File destDir = new File(dest_dir+"/mac/");
         File appDir = new File(destDir,app.getName()+".app");
         appDir.mkdirs();
+        p("app dir exists = " + appDir.exists());
         File contentsDir = new File(appDir,"Contents");
         contentsDir.mkdir();
         new File(contentsDir,"MacOS").mkdir();
@@ -106,7 +107,11 @@ public class MacBundler {
 
 
         // set the bundle bit
-        Runtime.getRuntime().exec("/Developer/Tools/SetFile -a B "+appDir);
+        try {
+            Runtime.getRuntime().exec("/Developer/Tools/SetFile -a B "+appDir);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     private static void processInfoPlist(AppDescription app, File contentsDir) throws Exception {
