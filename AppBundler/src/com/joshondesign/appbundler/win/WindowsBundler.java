@@ -7,6 +7,7 @@ package com.joshondesign.appbundler.win;
 
 import com.joshondesign.appbundler.AppDescription;
 import com.joshondesign.appbundler.Jar;
+import com.joshondesign.appbundler.NativeLib;
 import com.joshondesign.appbundler.Util;
 import com.joshondesign.xml.XMLWriter;
 import java.io.BufferedOutputStream;
@@ -25,10 +26,12 @@ import java.util.Map;
 public class WindowsBundler {
 
     public static void start(AppDescription app, String DEST_DIR) throws FileNotFoundException, Exception {
+        //create the 'win' directory
         File destDir = new File(DEST_DIR+"/win/");
         destDir.mkdirs();
 
         String exeName = app.getName() +".exe";
+        //create a temp dir for jsmooth to run in
         File tempdir = File.createTempFile("AppBundler", "jsmooth.dir");
         tempdir.delete();
         tempdir.mkdir();
@@ -96,6 +99,28 @@ public class WindowsBundler {
             Util.copyToFile(jar.getFile(), jarFile);
         }
 
+
+        processNatives(libDir, app);
+    }
+    private static void processNatives(File javaDir, AppDescription app) throws IOException {
+        //track the list of files in the appbundler_tasks.xml
+        byte[] buf = new byte[4096];
+        for(NativeLib lib : app.getNativeLibs()) {
+            p("sucking in native lib: " + lib);
+            for(File os : lib.getOSDirs()) {
+                p("os = " + os.getName());
+                for(File file : os.listFiles()) {
+                    p("   file = " + file.getName());
+                    File destFile = new File(javaDir, file.getName());
+                    p("copying to file: " + destFile);
+                    Util.copyToFile(file, destFile);
+                }
+            }
+            for(File jar : lib.getJars()) {
+                p("copying over native lib jar: " + jar.getName());
+                Util.copyToFile(jar, new File(javaDir, jar.getName()));
+            }
+        }
     }
 
     private static void generateProjectFile(XMLWriter xml, AppDescription app) throws Exception {
@@ -112,8 +137,19 @@ public class WindowsBundler {
         for(Jar jar : app.getJars()) {
             xml.start("classPath").text("lib\\"+jar.getName()).end();
         }
+        for(NativeLib lib : app.getNativeLibs()) {
+            for(File jar : lib.getJars()) {
+                xml.start("classPath").text("lib\\"+jar.getName()).end();
+            }
+        }
         xml.start("embeddedJar").text("false").end();
         xml.start("executableName").text(app.getName()+".exe").end();
+
+
+        xml.start("javaProperties")
+                .start("name").text("java.library.path").end()
+                .start("value").text("./lib").end()
+                .end();
 
         //<initialMemoryHeap>-1</initialMemoryHeap>
         xml.start("initialMemoryHeap").text("-1").end();
