@@ -90,7 +90,7 @@ public class WebosBundler {
         out.println("#!/bin/sh");
         out.println("date >> /tmp/avian.out");
         out.println("echo \"trying to start avian\" >> /tmp/avian.out");
-        out.println("echo $PWD >> /tmp/avian.txt");
+        out.println("echo $PWD >> /tmp/avian.out");
         out.println("export LD_LIBRARY_PATH=.");
         out.print("./avian -Dcom.joshondesign.amino.impl=sdl");
         out.print(" -cp ");
@@ -112,7 +112,7 @@ public class WebosBundler {
             out.print(jar.getFile().getName()+":");
         }
         out.print(" "+app.getMainClass());
-        //out.print(" 1>>/tmp/avian.out 2>>/tmp/avian.out");
+        out.print(" 1>>/tmp/avian.out 2>>/tmp/avian.out");
         out.println();
         //-cp classpath.jar:sdljava.jar:sdljava_test.jar:examples.jar:amino_sdl.jar:Amino2.jar 
         //com.joshondesign.amino.examples.Particles &amp;> /tmp/avian.out        
