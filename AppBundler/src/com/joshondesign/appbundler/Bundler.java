@@ -8,6 +8,7 @@ package com.joshondesign.appbundler;
 import com.joshondesign.appbundler.onejar.OneJarBundler;
 import com.joshondesign.appbundler.jnlp.JNLPBundler;
 import com.joshondesign.appbundler.mac.MacBundler;
+import com.joshondesign.appbundler.webos.WebosBundler;
 import com.joshondesign.appbundler.win.WindowsBundler;
 import com.joshondesign.xml.Doc;
 import com.joshondesign.xml.Elem;
@@ -70,22 +71,33 @@ public class Bundler {
 
         if("mac".equals(target)) {
             MacBundler.start(app,DEST_DIR);
+            return;
         }
         if("jnlp".equals(target)) {
             JNLPBundler.start(app,DEST_DIR, codebase);
+            return;
         }
         if("onejar".equals(target)) {
             OneJarBundler.start(app,DEST_DIR);
+            return;
         }
         if("win".equals(target)) {
             WindowsBundler.start(app,DEST_DIR);
+            return;
+        }
+        if("webos".equals(target)) {
+            WebosBundler.start(app,DEST_DIR);
+            return;
         }
         if("all".equals(target)) {
             MacBundler.start(app,DEST_DIR);
             OneJarBundler.start(app,DEST_DIR);
             JNLPBundler.start(app,DEST_DIR, codebase);
             WindowsBundler.start(app,DEST_DIR);
+            return;
         }
+        
+        p("ERROR: unrecognized target: " + target);
 
     }
 
@@ -123,6 +135,11 @@ public class Bundler {
 
         for(Elem nativeE : doc.xpath("/app/native")) {
             app.addNative(new NativeLib(nativeE.attr("name")));
+        }
+
+        for(Elem propE : doc.xpath("/app/property")) {
+            System.out.println("adding property");
+            app.addProp(new Prop(propE.attr("name"),propE.attr("value")));
         }
 
         return app;
@@ -184,6 +201,9 @@ public class Bundler {
                         nlib.setBaseDir(file);
                     }
                 }
+            }
+            if(nlib.getBaseDir() == null) {
+                p("WARNING: no basedir found for : " + nlib.getName());
             }
         }
     }

@@ -22,6 +22,7 @@ public class AppDescription {
     private Map<String,String> icons;
     private final ArrayList<String> appIcons;
     private List<NativeLib> natives;
+    private List<Prop> props;
 
     public AppDescription() {
         jars = new ArrayList<Jar>();
@@ -29,6 +30,7 @@ public class AppDescription {
         icons = new HashMap<String, String>();
         appIcons = new ArrayList<String>();
         natives = new ArrayList<NativeLib>();
+        props = new ArrayList<Prop>();
     }
 
     void addJar(Jar jar) {
@@ -84,6 +86,14 @@ public class AppDescription {
 
     public Iterable<NativeLib> getNativeLibs() {
         return natives;
+    }
+    
+    void addProp(Prop prop) {
+        props.add(prop);
+    }
+    
+    public Iterable<Prop> getProps() {
+        return props;
     }
 
 }

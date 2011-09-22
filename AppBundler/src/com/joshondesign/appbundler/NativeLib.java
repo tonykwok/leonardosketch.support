@@ -27,16 +27,22 @@ public class NativeLib {
         System.out.println(string);
     }
 
-    String getName() {
+    public String getName() {
         return name;
     }
 
     void setBaseDir(File file) {
         baseDir = file;
     }
+    
+    File getBaseDir() {
+        return baseDir;
+    }
 
     void verify() throws Exception {
         p("base dir = " + baseDir);
+        if(baseDir == null) 
+            throw new Exception("No basedir specified for native extension");
         if(!baseDir.exists())
             throw new Exception("The basedir for native lib '" + getName() + "' doesn't exist! : " + baseDir.getAbsolutePath());
         File natives = new File(baseDir,"native");

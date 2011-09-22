@@ -4,6 +4,7 @@ import com.joshondesign.appbundler.AppDescription;
 import com.joshondesign.appbundler.Bundler;
 import com.joshondesign.appbundler.Jar;
 import com.joshondesign.appbundler.NativeLib;
+import com.joshondesign.appbundler.Prop;
 import com.joshondesign.appbundler.Util;
 import com.joshondesign.xml.XMLWriter;
 
@@ -183,6 +184,9 @@ public class MacBundler {
         out.start("key").text("Properties").end();
         out.start("dict");
         key(out,"apple.laf.useScreenMenuBar","true");
+        for(Prop prop : app.getProps()) {
+            key(out,prop.getName(),prop.getValue());
+        }
         out.end();//dict
 
         out.end();//dict
@@ -201,7 +205,6 @@ public class MacBundler {
 
     private static void processNatives(File javaDir, AppDescription app) throws IOException {
         //track the list of files in the appbundler_tasks.xml
-        byte[] buf = new byte[4096];
         for(NativeLib lib : app.getNativeLibs()) {
             p("sucking in native lib: " + lib);
             for(File os : lib.getOSDirs()) {
