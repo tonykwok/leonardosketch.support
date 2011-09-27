@@ -88,9 +88,10 @@ public class WebosBundler {
     private static void generateRunScript(File appDir, AppDescription app) throws IOException, Exception {
         PrintWriter out = new PrintWriter(new FileWriter(new File(appDir,"runit.sh")));
         out.println("#!/bin/sh");
-        out.println("date >> /tmp/avian.out");
-        out.println("echo \"trying to start avian\" >> /tmp/avian.out");
-        out.println("echo $PWD >> /tmp/avian.out");
+        String filename = "/tmp/"+app.getMainClass()+".out";
+        out.println("date >> "+filename);
+        out.println("echo \"trying to start avian\" >> "+filename);
+        out.println("echo $PWD >> "+filename);
         out.println("export LD_LIBRARY_PATH=.");
         out.print("./avian -Dcom.joshondesign.amino.impl=sdl");
         out.print(" -cp ");
@@ -112,7 +113,7 @@ public class WebosBundler {
             out.print(jar.getFile().getName()+":");
         }
         out.print(" "+app.getMainClass());
-        out.print(" 1>>/tmp/avian.out 2>>/tmp/avian.out");
+        out.print(" 1>>"+filename+" 2>>"+filename);
         out.println();
         //-cp classpath.jar:sdljava.jar:sdljava_test.jar:examples.jar:amino_sdl.jar:Amino2.jar 
         //com.joshondesign.amino.examples.Particles &amp;> /tmp/avian.out        
