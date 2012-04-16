@@ -29,6 +29,19 @@ public abstract class AppEvent extends java.util.EventObject {
         }
     }
 
+    public static class FullScreenEvent extends com.apple.eawt.AppEvent {
+        final java.awt.Window window;
+        
+        public FullScreenEvent(java.awt.Window window) {
+            this.window = window;
+        }
+        
+        public java.awt.Window getWindow() {
+            return null;
+        }
+    }
+    
+
     AppEvent() {
         super(null);
     }
